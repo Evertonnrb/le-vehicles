@@ -4,14 +4,13 @@ import com.le.vehicles.model.entities.Vehicle;
 import com.le.vehicles.model.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/vehicles")
+@RequestMapping("/api/v1/vehicles")
 public class VehiclesEndPoint {
     @Autowired
     private VehicleService service;
@@ -19,5 +18,18 @@ public class VehiclesEndPoint {
     @GetMapping
     public List<Vehicle> getVehicles() {
         return service.getVehicles();
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findVehiclesById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(service.findById(id));
+    }
+    @GetMapping("/type/{tipo}")
+    public ResponseEntity<?> findByVehicleType(@PathVariable String tipo){
+        return ResponseEntity.ok().body(service.findBType(tipo));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> saveVehicles(@RequestBody Vehicle vehicle){
+        return ResponseEntity.ok().body(service.saveVehicles(vehicle));
     }
 }
