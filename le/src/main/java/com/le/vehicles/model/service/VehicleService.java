@@ -2,12 +2,10 @@ package com.le.vehicles.model.service;
 
 import com.le.vehicles.model.dto.VehicleDTO;
 import com.le.vehicles.model.entities.Vehicle;
-import com.le.vehicles.model.exceptions.VehiclesEntityNotFoundException;
 import com.le.vehicles.model.repository.Vehicles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +19,8 @@ public class VehicleService {
         return vehiclesRepository.findAll().stream().map(VehicleDTO::create).collect(Collectors.toList());
     }
 
-    public Optional<VehicleDTO> findById(Long id) {
-        return vehiclesRepository.findById(id).map(VehicleDTO::create);
+    public VehicleDTO findById(Long id) {
+        return VehicleDTO.create(vehiclesRepository.findById(id).get());
     }
 
     public VehicleDTO saveVehicles(Vehicle vehicle) {
@@ -44,10 +42,7 @@ public class VehicleService {
         return null;
     }
 
-    public boolean deleteVehicle(Long id) {
-        if (findById(id).isPresent()) {
-            vehiclesRepository.deleteById(id);
-            return true;
-        }else return false;
+    public void deleteVehicle(Long id) {
+        vehiclesRepository.deleteById(id);
     }
 }

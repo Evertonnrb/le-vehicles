@@ -5,6 +5,7 @@ import com.le.vehicles.model.entities.Vehicle;
 import com.le.vehicles.model.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,11 +25,9 @@ public class VehiclesEndPoint {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findVehiclesById(@PathVariable Long id) {
-        Optional<VehicleDTO> vehicle = service.findById(id);
-
-        return vehicle.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<VehicleDTO> findVehiclesById(@PathVariable Long id) {
+        VehicleDTO vehicle = service.findById(id);
+        return ResponseEntity.ok(vehicle);
     }
 
     @GetMapping("/type/{tipo}")
@@ -41,17 +40,15 @@ public class VehiclesEndPoint {
     }
 
     @PostMapping
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<?> saveVehicles(@RequestBody Vehicle vehicle) {
-        try {
-            VehicleDTO v = service.saveVehicles(vehicle);
-            URI location = getUri(v.getId());
-            return ResponseEntity.created(location).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        VehicleDTO v = service.saveVehicles(vehicle);
+        URI location = getUri(v.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<?> updateVehicles(@PathVariable Long id, @RequestBody Vehicle vehicle) {
         vehicle.setId(id);
         VehicleDTO dto = service.updateVehicle(vehicle, id);
@@ -60,11 +57,10 @@ public class VehiclesEndPoint {
     }
 
     @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<?> removeVehicles(@PathVariable Long id) {
-        boolean ok = service.deleteVehicle(id);
-        return ok ?
-                ResponseEntity.ok().build() :
-                ResponseEntity.notFound().build();
+        service.deleteVehicle(id);
+        return ResponseEntity.ok().build();
     }
 
     private URI getUri(Long id) {
