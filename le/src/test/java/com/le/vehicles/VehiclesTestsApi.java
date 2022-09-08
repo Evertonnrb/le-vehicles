@@ -42,7 +42,7 @@ public class VehiclesTestsApi {
         vehicle.setTipo("tipo de teste");
 
         //insert
-        ResponseEntity response = rest.postForEntity("/api/v1/vehicles/", vehicle, null);
+        ResponseEntity response = rest.withBasicAuth("everton.nrb@gmail.com","123").postForEntity("/api/v1/vehicles/", vehicle, null);
         System.out.println(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -51,7 +51,7 @@ public class VehiclesTestsApi {
        // VehicleDTO dto = getVehicle(location).getBody();
 
         //delete
-        rest.delete(location);
+        rest.withBasicAuth("everton.nrb@gmail.com","123").delete(location);
         assertEquals(HttpStatus.BAD_REQUEST, getVehicle(location).getStatusCode());
     }
 
